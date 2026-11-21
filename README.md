@@ -13,6 +13,15 @@ Este directorio contiene el addon `plugin.video.palantir3` **3.3.12** (partiendo
 > Debian nativos hasta tener esa versión**: Kodi los actualizaría a un paquete
 > que no puede ejecutar.
 
+## Estado actual
+
+- GitHub: <https://github.com/Troyanoj/repository.jaimetv>
+- GitHub Pages: <https://troyanoj.github.io/repository.jaimetv/>
+- Publicado: `plugin.video.palantir3` **3.3.12** y `repository.jaimetv` **1.0.0**.
+- Límite provisional: el repo solo sirve a **Kodi 21.3+** (entrypoint Python 3.12).
+- Pendiente para 3.3.13: añadir `default_3.13.py` de un Kodi Debian 21.2 y el
+  selector multi-versión; después bajar `minversion` a `21.0.0`.
+
 ## Qué se ha cambiado
 
 - `default.py` es el **código real** del addon (47.987 bytes), no el launcher que
@@ -65,16 +74,16 @@ kodi-repo/
 
 ```bash
 cd kodi-repo
-python3 tools/build_repo.py --base-url http://127.0.0.1:8000
+python3 tools/build_repo.py --base-url http://127.0.0.1:8000 --output docs-local
 
-# En otra terminal, servir docs/
-python3 -m http.server 8000 --directory docs
+# En otra terminal, servir docs-local/
+python3 -m http.server 8000 --directory docs-local
 ```
 
 En Kodi de **este mismo equipo**:
 1. Ajustes → Sistema → Add-ons → activar “Fuentes desconocidas”.
 2. Add-ons → Instalar desde archivo zip →
-   `kodi-repo/docs/zips/repository.jaimetv/repository.jaimetv-1.0.0.zip`.
+   `kodi-repo/docs-local/zips/repository.jaimetv/repository.jaimetv-1.0.0.zip`.
 3. Add-ons → Instalar desde repositorio → “Repositorio Jaimetv” →
    Add-ons de vídeo → Palantir 3 → Instalar.
 4. Comprobar que instala **3.3.12**.
@@ -82,31 +91,49 @@ En Kodi de **este mismo equipo**:
 > `127.0.0.1` solo funciona en este equipo. Para otro dispositivo usa la IP LAN
 > del equipo que sirve (`http://192.168.x.x:8000`) o publica en GitHub Pages.
 
-## Publicar en GitHub Pages
+## Actualizar el repositorio publicado
 
-1. Crea un repositorio **público** en GitHub, por ejemplo `kodi-repo`.
-2. Sube el contenido de este directorio:
-   ```bash
-   git init
-   git add -A
-   git commit -m "Repositorio Palantir 3"
-   git branch -M main
-   git remote add origin https://github.com/Troyanoj/repository.jaimetv.git
-   git push -u origin main
-   ```
-3. En GitHub: Settings → Pages → “Deploy from a branch” → `main` / `/docs`.
-4. Espera a que publique y comprueba:
-   ```bash
-   curl -I https://troyanoj.github.io/repository.jaimetv/addons.xml
-   curl -I https://troyanoj.github.io/repository.jaimetv/addons.xml.md5
-   ```
-5. Reconstruye con la URL real (importante: cambia las URLs del repo addon):
-   ```bash
-   python3 tools/release.py --base-url https://troyanoj.github.io/repository.jaimetv
-   git add -A && git commit -m "URL de Pages" && git push
-   ```
-6. Instala en cada dispositivo el **nuevo** zip
-   `docs/zips/repository.jaimetv/repository.jaimetv-1.0.0.zip`.
+El repositorio ya está creado y GitHub Pages está activo. Para publicar una
+versión nueva:
+
+```bash
+python3 tools/release.py \
+  --base-url https://troyanoj.github.io/repository.jaimetv \
+  --bump patch \
+  --publish
+```
+
+`release.py` sube la versión del plugin, regenera `docs/`, hace commit y push.
+GitHub Pages republica en 1-2 minutos. Verifica:
+
+```bash
+curl -sS https://troyanoj.github.io/repository.jaimetv/addons.xml.md5
+```
+
+Si cambias el `addon.xml` del **repositorio** (por ejemplo `minversion`), sube
+también su versión (`1.0.0` → `1.0.1`) para que Kodi lo actualice.
+
+Si alguna vez hay que recrear el repo desde cero:
+
+```bash
+git init
+git add -A
+git commit -m "Repositorio Palantir 3"
+git branch -M main
+git remote add origin https://github.com/Troyanoj/repository.jaimetv.git
+git push -u origin main
+# Settings → Pages → Deploy from a branch → main / docs
+```
+
+### Instalar en un dispositivo
+
+Instala el zip del repositorio:
+
+`docs/zips/repository.jaimetv/repository.jaimetv-1.0.0.zip`
+
+o descárgalo de:
+
+`https://troyanoj.github.io/repository.jaimetv/zips/repository.jaimetv/repository.jaimetv-1.0.0.zip`
 
 ### Desinstalar el repositorio antiguo
 
