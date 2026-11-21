@@ -186,8 +186,8 @@ y volver a poner esa URL en `libs/ioiiIII11.md`.
   ```
 - `default.py` es código ofuscado (marshal) del addon original; no se ha tocado.
 - `addons.xml.md5` se calcula sobre los bytes exactos de `addons.xml`.
-- El repo addon usa `<dir minversion="19.0.0">` con `info`, `checksum` y
-  `datadir zip="true"`.
+- El repo addon usa `<dir minversion="21.3.0">` (provisional, mientras solo
+  haya entrypoint 3.12) con `info`, `checksum` y `datadir zip="true"`.
 
 ## Comprobaciones tras instalar
 
