@@ -41,7 +41,7 @@
     <import addon="xbmc.python" version="3.0.0"/>
   </requires>
   <extension point="xbmc.addon.repository" name="Repositorio Jaimetv">
-    <dir minversion="21.0.0">
+    <dir minversion="21.3.0">
       <info compressed="false">https://troyanoj.github.io/repository.jaimetv/addons.xml</info>
       <checksum>https://troyanoj.github.io/repository.jaimetv/addons.xml.md5</checksum>
       <datadir zip="true">https://troyanoj.github.io/repository.jaimetv/zips</datadir>

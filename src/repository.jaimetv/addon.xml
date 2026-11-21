@@ -4,7 +4,7 @@
     <import addon="xbmc.python" version="3.0.0"/>
   </requires>
   <extension point="xbmc.addon.repository" name="Repositorio Jaimetv">
-    <dir minversion="21.0.0">
+    <dir minversion="21.3.0">
       <info compressed="false">{{BASE_URL}}/addons.xml</info>
       <checksum>{{BASE_URL}}/addons.xml.md5</checksum>
       <datadir zip="true">{{BASE_URL}}/zips</datadir>

@@ -54,8 +54,10 @@ kodi-repo/
   (Kodi Flatpak 21.3). El **Kodi 21.2 nativo de Debian usa Python 3.13** porque
   enlaza `libpython3.13`; para esos equipos hace falta su `default.py` y un
   selector multi-versión (3.3.13). Para Kodi 19/20/22 ocurre lo mismo: el
-  bytecode no es portable entre versiones. El repositorio declara
-  `minversion="21.0.0"` para no ofrecer esta versión a Kodi antiguos.
+  bytecode no es portable entre versiones. Mientras el repo solo tenga el
+  entrypoint 3.12, declara `minversion="21.3.0"` para que el Kodi 21.2 de
+  Debian (Python 3.13) **no** vea/instale esta versión. Cuando se añada
+  `default_3.13.py` en 3.3.13 se bajará a `21.0.0`.
 - Para publicar: una cuenta de GitHub (GitHub Pages gratuito) o cualquier hosting
   HTTPS que sirva archivos estáticos.
 
