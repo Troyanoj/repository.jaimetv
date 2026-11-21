@@ -4,6 +4,15 @@ Este directorio contiene el addon `plugin.video.palantir3` **3.3.12** (partiendo
 3.3.11 real instalado en el equipo) y un repositorio Kodi propio
 (`repository.jaimetv`) para distribuirlo y actualizarlo en todos tus dispositivos.
 
+> **Aviso importante (Python 3.12 vs 3.13).** El `default.py` real es bytecode
+> específico de la versión de Python. Este paquete 3.3.12 se ha extraído de un
+> Kodi Flatpak 21.3 con **Python 3.12**. El Kodi 21.2 de Debian enlaza
+> `libpython3.13` y necesita el `default.py` de Python 3.13. Antes de publicar
+> el repo para esos equipos hay que añadir `default_3.13.py` y el selector
+> multi-versión (3.3.13). **No publiques 3.3.12 en un repo visible a equipos
+> Debian nativos hasta tener esa versión**: Kodi los actualizaría a un paquete
+> que no puede ejecutar.
+
 ## Qué se ha cambiado
 
 - `default.py` es el **código real** del addon (47.987 bytes), no el launcher que
@@ -42,8 +51,10 @@ kodi-repo/
 
 - Python 3.8+ (solo stdlib).
 - Kodi 21+ en este paquete. El `default.py` real es bytecode de **Python 3.12**
-  (Kodi 21). Para Kodi 19/20/22 hace falta el `default.py` de esa versión de
-  Python; el bytecode no es portable entre versiones. El repositorio declara
+  (Kodi Flatpak 21.3). El **Kodi 21.2 nativo de Debian usa Python 3.13** porque
+  enlaza `libpython3.13`; para esos equipos hace falta su `default.py` y un
+  selector multi-versión (3.3.13). Para Kodi 19/20/22 ocurre lo mismo: el
+  bytecode no es portable entre versiones. El repositorio declara
   `minversion="21.0.0"` para no ofrecer esta versión a Kodi antiguos.
 - Para publicar: una cuenta de GitHub (GitHub Pages gratuito) o cualquier hosting
   HTTPS que sirva archivos estáticos.
@@ -78,18 +89,18 @@ En Kodi de **este mismo equipo**:
    git add -A
    git commit -m "Repositorio Palantir 3"
    git branch -M main
-   git remote add origin https://github.com/TU_USUARIO/kodi-repo.git
+   git remote add origin https://github.com/Troyanoj/repository.jaimetv.git
    git push -u origin main
    ```
 3. En GitHub: Settings → Pages → “Deploy from a branch” → `main` / `/docs`.
 4. Espera a que publique y comprueba:
    ```bash
-   curl -I https://TU_USUARIO.github.io/kodi-repo/addons.xml
-   curl -I https://TU_USUARIO.github.io/kodi-repo/addons.xml.md5
+   curl -I https://troyanoj.github.io/repository.jaimetv/addons.xml
+   curl -I https://troyanoj.github.io/repository.jaimetv/addons.xml.md5
    ```
 5. Reconstruye con la URL real (importante: cambia las URLs del repo addon):
    ```bash
-   python3 tools/release.py --base-url https://TU_USUARIO.github.io/kodi-repo
+   python3 tools/release.py --base-url https://troyanoj.github.io/repository.jaimetv
    git add -A && git commit -m "URL de Pages" && git push
    ```
 6. Instala en cada dispositivo el **nuevo** zip
@@ -113,7 +124,7 @@ Edita lo que quieras en `src/plugin.video.palantir3/` y después:
 ```bash
 # sube la parte patch: 3.3.12 -> 3.3.13
 python3 tools/release.py \
-  --base-url https://TU_USUARIO.github.io/kodi-repo \
+  --base-url https://troyanoj.github.io/repository.jaimetv \
   --bump patch \
   --publish
 ```
