@@ -1,40 +1,37 @@
 # Repositorio Kodi de Palantir 3 (auto-hospedado)
 
-Este directorio contiene el addon `plugin.video.palantir3` **3.3.12** (partiendo del
-3.3.11 real instalado en el equipo) y un repositorio Kodi propio
-(`repository.jaimetv`) para distribuirlo y actualizarlo en todos tus dispositivos.
-
-> **Aviso importante (Python 3.12 vs 3.13).** El `default.py` real es bytecode
-> específico de la versión de Python. Este paquete 3.3.12 se ha extraído de un
-> Kodi Flatpak 21.3 con **Python 3.12**. El Kodi 21.2 de Debian enlaza
-> `libpython3.13` y necesita el `default.py` de Python 3.13. Antes de publicar
-> el repo para esos equipos hay que añadir `default_3.13.py` y el selector
-> multi-versión (3.3.13). **No publiques 3.3.12 en un repo visible a equipos
-> Debian nativos hasta tener esa versión**: Kodi los actualizaría a un paquete
-> que no puede ejecutar.
+Este directorio contiene `plugin.video.palantir3` **3.3.13** y el repositorio
+Kodi `repository.jaimetv`. La 3.3.13 usa un `default.py` **en fuente** (Plan B),
+compatible con Python 3.12, 3.13 y 3.14; los `libs/*.md` son los del addon
+original y no se han tocado.
 
 ## Estado actual
 
 - GitHub: <https://github.com/Troyanoj/repository.jaimetv>
 - GitHub Pages: <https://troyanoj.github.io/repository.jaimetv/>
-- Publicado: `plugin.video.palantir3` **3.3.12** y `repository.jaimetv` **1.0.0**.
-- Límite provisional: el repo solo sirve a **Kodi 21.3+** (entrypoint Python 3.12).
-- Pendiente para 3.3.13: añadir `default_3.13.py` de un Kodi Debian 21.2 y el
-  selector multi-versión; después bajar `minversion` a `21.0.0`.
+- Publicado: `plugin.video.palantir3` **3.3.13** y `repository.jaimetv` **1.0.0**.
+- Validado en **Kodi nativo Ubuntu 26.04 / Kodi 21.3 / Python 3.14**. El mismo
+  fuente carga en Python 3.12 y 3.13; el Flatpak 21.3 (3.12) queda pendiente de
+  la prueba real en el equipo de trabajo.
+- `minversion="21.3.0"`: el repositorio solo se ofrece a Kodi 21.3, que es la
+  versión probada. No se ofrece a versiones anteriores sin probar.
+- **Contenido**: la BD Moria es una foto fija; las series y episodios nuevos no
+  se actualizan solos. Ver “Actualización de contenido”.
 
 ## Qué se ha cambiado
 
-- `default.py` es el **código real** del addon (47.987 bytes), no el launcher que
-  descargaba código desde `palantir.5g.in`. Ya no hay bootstrap remoto.
+- `default.py` está reescrito **en fuente** (cargador de `libs`, router de
+  acciones, renderizado de listas e inicialización). Sustituye al bytecode 3.12
+  que hacía crash a Kodi 3.14 y funciona en 3.12, 3.13 y 3.14.
 - `libs/ioiiIII11.md` (actualizador de la base Moria) ya **no consulta**
   `https://api.github.com/repos/Maniac2017/Mipal2025`. La URL se ha dejado vacía
   y `getDateUpdate()` devuelve una lista de actualizaciones vacía. El addon sigue
   usando la BD Moria existente.
-- `addon.xml` pasa de `3.3.11` a `3.3.12` (versión numérica, compatible con Kodi).
+- `addon.xml` pasa de `3.3.11` a `3.3.13` (versión numérica, compatible con Kodi).
 - Se ha añadido `repository.jaimetv` (1.0.0) y el generador de repositorio.
 
 **No se ha tocado** la búsqueda, los listados, Alldebrid, Real-Debrid, Trakt, TMDb
-ni la reproducción. Los únicos cambios funcionales son los dos anteriores.
+ni la reproducción: toda esa lógica sigue en los `libs/*.md` originales.
 
 ## Estructura
 
@@ -47,7 +44,7 @@ kodi-repo/
 │   ├── addons.xml
 │   ├── addons.xml.md5
 │   └── zips/
-│       ├── plugin.video.palantir3/plugin.video.palantir3-3.3.12.zip
+│       ├── plugin.video.palantir3/plugin.video.palantir3-3.3.13.zip
 │       └── repository.jaimetv/repository.jaimetv-1.0.0.zip
 ├── tools/
 │   ├── build_repo.py                 # genera addons.xml, md5 y zips
@@ -59,14 +56,11 @@ kodi-repo/
 ## Requisitos
 
 - Python 3.8+ (solo stdlib).
-- Kodi 21+ en este paquete. El `default.py` real es bytecode de **Python 3.12**
-  (Kodi Flatpak 21.3). El **Kodi 21.2 nativo de Debian usa Python 3.13** porque
-  enlaza `libpython3.13`; para esos equipos hace falta su `default.py` y un
-  selector multi-versión (3.3.13). Para Kodi 19/20/22 ocurre lo mismo: el
-  bytecode no es portable entre versiones. Mientras el repo solo tenga el
-  entrypoint 3.12, declara `minversion="21.3.0"` para que el Kodi 21.2 de
-  Debian (Python 3.13) **no** vea/instale esta versión. Cuando se añada
-  `default_3.13.py` en 3.3.13 se bajará a `21.0.0`.
+- Kodi 21.3, probado en **Kodi nativo Ubuntu 26.04 (Python 3.14)**. El mismo
+  `default.py` fuente carga en Python 3.12/3.13; el Flatpak 21.3 (Python 3.12)
+  está pendiente de la prueba real en el equipo de trabajo.
+- El repo declara `minversion="21.3.0"` porque es la versión probada; no se
+  ofrece a versiones anteriores de Kodi sin probar.
 - Para publicar: una cuenta de GitHub (GitHub Pages gratuito) o cualquier hosting
   HTTPS que sirva archivos estáticos.
 
@@ -86,7 +80,7 @@ En Kodi de **este mismo equipo**:
    `kodi-repo/docs-local/zips/repository.jaimetv/repository.jaimetv-1.0.0.zip`.
 3. Add-ons → Instalar desde repositorio → “Repositorio Jaimetv” →
    Add-ons de vídeo → Palantir 3 → Instalar.
-4. Comprobar que instala **3.3.12**.
+4. Comprobar que instala **3.3.13**.
 
 > `127.0.0.1` solo funciona en este equipo. Para otro dispositivo usa la IP LAN
 > del equipo que sirve (`http://192.168.x.x:8000`) o publica en GitHub Pages.
@@ -144,14 +138,14 @@ Para que Kodi deje de consultar `palantir.5g.in/Repo/addons.xml.md5`:
 3. Si Kodi ofrece desinstalar addons instalados desde ese repo, **no** desinstales
    Palantir 3; solo el repositorio.
 
-Después instala `repository.jaimetv`. El addon 3.3.12 y su BD Moria se conservan.
+Después instala `repository.jaimetv`. El addon 3.3.13 y su BD Moria se conservan.
 
 ## Publicar futuras actualizaciones
 
 Edita lo que quieras en `src/plugin.video.palantir3/` y después:
 
 ```bash
-# sube la parte patch: 3.3.12 -> 3.3.13
+# sube la parte patch: 3.3.13 -> 3.3.14
 python3 tools/release.py \
   --base-url https://troyanoj.github.io/repository.jaimetv \
   --bump patch \
@@ -177,17 +171,31 @@ special://profile/addon_data/script.module/settings.xml   (~144 MB)
 ```
 
 Es la que contiene películas, series y enlaces. **No se incluye en el zip** por
-tamaño y porque no debe publicarse en un repo público. En tus dispositivos ya
-existe y las actualizaciones del addon no la tocan.
-
-Para un dispositivo nuevo, copia ese archivo desde uno que funcione a la misma
+tamaño y porque no debe publicarse en un repo público. En los equipos ya
+instalados suele existir; si falta, cópiala desde uno que funcione a la misma
 ruta (`.../userdata/addon_data/script.module/settings.xml`) con Kodi cerrado.
 Si no existe, el addon no tendrá contenido que listar: el actualizador original
 está desactivado porque su origen en GitHub ya no existe.
 
-Si en el futuro quieres actualizar contenidos, habrá que decidir una fuente
-propia para los archivos `moria_*.up` / `*.zm3` (por ejemplo un servidor privado)
-y volver a poner esa URL en `libs/ioiiIII11.md`.
+## Actualización de contenido
+
+- **Código** (scrapers, resolvers, arreglos): se actualiza automáticamente desde
+  este repositorio.
+- **Contenido** (series nuevas, temporadas/episodios nuevos, enlaces nuevos):
+  **no** se actualiza solo. La BD Moria es una foto fija (contenido hasta
+  finales de octubre de 2026, versión 556.1). El actualizador original
+  (`getDateUpdate`/`get_moria`) descargaba `moria_*.up`/`.zm3` de
+  `Maniac2017/Mipal2025`, que ya no existe.
+- `listado_episodioS` construye la lista con
+  `SELECT DISTINCT episodio FROM enlaces_series`; si un episodio nuevo no está
+  en la BD, no aparece aunque TMDb lo conozca.
+- Para tener contenido nuevo automático haría falta una **fuente propia** de
+  actualizaciones (generar y alojar `moria_*.up`/`.zm3` o una BD completa) y
+  volver a activar el actualizador con esa URL. Es un proyecto de contenido
+  aparte; no basta con actualizar el código.
+- Interino: si aparece una BD Moria actualizada de confianza, se copia y las
+  series/episodios nuevos aparecen sin tocar el código. No uses BDs/`.up` de
+  origen desconocido: el actualizador ejecuta SQL sobre la BD del addon.
 
 ## Rollback
 
@@ -195,7 +203,7 @@ y volver a poner esa URL en `libs/ioiiIII11.md`.
   del addon instalado antes de tocar nada).
 - BD original: `../.audit/backup/moria_settings.xml` (144 MB).
 - Repo original: `../.audit/live/repository.estupalant/`.
-- Para volver atrás en Kodi: desinstala 3.3.12 e instala el zip 3.3.11 original;
+- Para volver atrás en Kodi: desinstala 3.3.13 e instala el zip 3.3.11 original;
   la BD Moria no se modifica.
 
 ## Notas técnicas
@@ -211,10 +219,10 @@ y volver a poner esa URL en `libs/ioiiIII11.md`.
   EOF
   # editar /tmp/ioiiIII11.py y volver a codificar con encode(...)
   ```
-- `default.py` es código ofuscado (marshal) del addon original; no se ha tocado.
+- `default.py` es ahora código fuente (Plan B); los `libs/*.md` siguen siendo los módulos originales codificados.
 - `addons.xml.md5` se calcula sobre los bytes exactos de `addons.xml`.
-- El repo addon usa `<dir minversion="21.3.0">` (provisional, mientras solo
-  haya entrypoint 3.12) con `info`, `checksum` y `datadir zip="true"`.
+- El repo addon usa `<dir minversion="21.3.0">` (versión de Kodi probada) con
+  `info`, `checksum` y `datadir zip="true"`.
 
 ## Comprobaciones tras instalar
 
@@ -228,7 +236,7 @@ palantir.5g.in/Repo/addons.xml.md5
 Y sí debe aparecer la versión nueva:
 
 ```text
-plugin.video.palantir3 v3.3.12 installed
+plugin.video.palantir3 v3.3.13 installed
 ```
 
 Prueba después: abrir el addon, buscar una película, abrir una serie, reproducir
